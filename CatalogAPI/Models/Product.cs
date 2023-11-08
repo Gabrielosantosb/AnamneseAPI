@@ -8,7 +8,7 @@
         public decimal? Price { get; set; }
         public string? Image { get; set; }
         public DateTime? PurchaseDate { get; set; }
-        public string? Iventory { get; set; }
+        public string? Inventory { get; set; }
 
 
         public Category? Category { get; set; }
