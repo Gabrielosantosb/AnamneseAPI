@@ -1,4 +1,5 @@
 using CatalogAPI.Context;
+using CatalogAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,16 @@ builder.Services.AddDbContext<MySQLContext>(options =>
 
 
 var app = builder.Build();
+
+
+//-----------------CONTROLLERS---------------------------
+app.MapGet("/", () => "Catalogo de Produtos");
+app.MapPost("/categorias", async(Category category, MySQLContext db) =>
+{
+    db.Categorys.Add(category);
+    await db.SaveChangesAsync();
+    return Results.Created($"/categorias/{category.Id}", category);
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
