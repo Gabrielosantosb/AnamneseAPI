@@ -10,7 +10,7 @@ namespace CatalogAPI.Context
         }
 
         public DbSet<Product>? Products { get; set; }
-        public DbSet<Category>? Categorys { get; set; }
+        public DbSet<Category>? Categories { get; set; }
 
 
 
