@@ -1,13 +1,37 @@
 using CatalogAPI.Context;
 using CatalogAPI.Models;
+using CatalogAPI.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<ITokenService>(new TokenService());
+builder.Services.AddAuthorization();
+
+//--------------------------ValidarToken-----------------------------------
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+
+        ValidIssuer = builder.Configuration["Jwt: Issuer"],
+        ValidAudience = builder.Configuration["Jwt: Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt: Key"]))
+    };
+});
 
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -18,6 +42,20 @@ builder.Services.AddDbContext<MySQLContext>(options =>
 
 var app = builder.Build();
 
+//Endpoint para Login
+
+app.MapPost("/login", [AllowAnonymous] (UserModel userModel, ITokenService tokenService) =>
+{
+    if(userModel == null) return Results.BadRequest("Invalid Login");
+
+    if (userModel.Name == "gabriel" && userModel.Password == "numsei123")
+    {
+        var tokenString = tokenService.GenerateToken(app.Configuration["JwtKey"]),
+        
+
+
+    }
+});
 
 //-----------------CONTROLLERS CATEGORIAS---------------------------
 
@@ -109,9 +147,6 @@ app.MapDelete("/produtos/{id:int}", async (int id, MySQLContext db) =>
     return Results.NoContent();
 });
 
-
-
-
 //-----------------------------------------------------------------
 
 // Configure the HTTP request pipeline.
@@ -120,4 +155,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.Run();
