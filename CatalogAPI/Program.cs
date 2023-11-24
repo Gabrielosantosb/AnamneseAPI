@@ -27,11 +27,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
 
-        ValidIssuer = builder.Configuration["Jwt: Issuer"],
-        ValidAudience = builder.Configuration["Jwt: Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt: Key"]))
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
 });
+
 
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -42,20 +43,28 @@ builder.Services.AddDbContext<MySQLContext>(options =>
 
 var app = builder.Build();
 
-//Endpoint para Login
+//-------------------Endpoint para Login---------------------------
 
 app.MapPost("/login", [AllowAnonymous] (UserModel userModel, ITokenService tokenService) =>
 {
-    if(userModel == null) return Results.BadRequest("Invalid Login");
-
-    if (userModel.Name == "gabriel" && userModel.Password == "numsei123")
+    if (userModel == null) return Results.BadRequest("Login Inválido");
+    if (userModel.UserName == "gabriel" && userModel.Password == "1234")
     {
-        var tokenString = tokenService.GenerateToken(app.Configuration["JwtKey"]),
-        
-
-
+        var tokenString = tokenService.GenerateToken(app.Configuration["Jwt:Key"],
+            app.Configuration["Jwt:Issuer"],
+            app.Configuration["Jwt:Audience"],
+            userModel
+            );
+        return Results.Ok(new { token = tokenString });
     }
-});
+    else return Results.BadRequest("Login Inválido");
+
+}).Produces(StatusCodes.Status400BadRequest)
+.Produces(StatusCodes.Status200OK)
+.WithName("Login")
+.WithTags("Autentificacao");
+
+
 
 //-----------------CONTROLLERS CATEGORIAS---------------------------
 
@@ -71,7 +80,8 @@ app.MapGet("/categorias/{id:int}", async (int id, MySQLContext db) =>
 app.MapGet("/categorias", async (MySQLContext db) =>
 {
     await db.Categories.ToListAsync();
-});
+}).RequireAuthorization();
+
 
 app.MapPost("/categorias", async (Category category, MySQLContext db) =>
 {
@@ -115,7 +125,7 @@ app.MapGet("/produtos/{id:int}", async (int id, MySQLContext db) =>
 app.MapGet("/produtos", async (MySQLContext db) =>
 {
     await db.Products.ToListAsync();
-});
+}).RequireAuthorization();
 
 app.MapPost("/produtos", async (Product product, MySQLContext db) =>
 {
