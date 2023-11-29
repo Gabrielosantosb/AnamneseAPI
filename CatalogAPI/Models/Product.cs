@@ -7,10 +7,6 @@ namespace CatalogAPI.Models
     [Table ("products")]
     public class Product : BaseModel
     {
-
-        
-
-
         [Column ("description")]
         public string? Description { get; set; }
         
