@@ -1,7 +1,9 @@
 using CatalogAPI.ApiEndpoints;
+using CatalogAPI.AppServicesExtensions;
 using CatalogAPI.Context;
 using CatalogAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -78,12 +80,10 @@ app.MapCategoryEndpoints();
 app.MapProductEndpoints();
 
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c => { });
-}
+
+var environment = app.Environment;
+
+app.UseExceptionHandling(environment).UseSwaggerMiddleware().UseAppCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
