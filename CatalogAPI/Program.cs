@@ -1,12 +1,15 @@
 using CatalogAPI.ApiEndpoints;
 using CatalogAPI.AppServicesExtensions;
 using CatalogAPI.Context;
+using CatalogAPI.Integracao;
+using CatalogAPI.Integracao.Interfaces;
+using CatalogAPI.Integracao.Refit;
 using CatalogAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Refit;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,7 +50,14 @@ builder.Services.AddSwaggerGen(c =>
    });
 builder.Services.AddAuthorization();
 
+
+
+builder.Services.AddScoped<IViaCepIntegration, ViaCepIntegration>();
 builder.Services.AddSingleton<ITokenService>(new TokenService());
+builder.Services.AddRefitClient<IViaCepIntegracaoRefit>().ConfigureHttpClient(httpClient =>
+    httpClient.BaseAddress = new Uri("https://viacep.com.br"));
+
+
 //--------------------------ValidarToken-----------------------------------
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
@@ -83,8 +93,7 @@ app.MapProductEndpoints();
 
 var environment = app.Environment;
 
-app.UseExceptionHandling(environment).UseSwaggerMiddleware().UseAppCors();
-
+//app.UseExceptionHandling(environment).UseSwaggerMiddleware().UseAppCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
