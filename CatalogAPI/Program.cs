@@ -88,12 +88,17 @@ var app = builder.Build();
 app.MapAuthentificateEndpoints();
 app.MapCategoryEndpoints();
 app.MapProductEndpoints();
+app.MapViaCepEndpoints();
 
 
 
-var environment = app.Environment;
-
+//var environment = app.Environment;
 //app.UseExceptionHandling(environment).UseSwaggerMiddleware().UseAppCors();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c => { });
+}
 app.UseAuthentication();
 app.UseAuthorization();
 

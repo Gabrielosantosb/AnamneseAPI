@@ -17,7 +17,7 @@ namespace CatalogAPI.Integracao
         public async Task<ViaCepResponse> GetDataViaCep(string cep)
         {
             var responseData = await _viaCepIntegracaoRefit.GetDataViaCep(cep);
-            if (responseData == null && responseData.IsSuccessStatusCode) return responseData.Content;
+            if (responseData != null && responseData.IsSuccessStatusCode) return responseData.Content;
             return null;
         }
     }
