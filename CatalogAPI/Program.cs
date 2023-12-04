@@ -49,6 +49,7 @@ builder.Services.AddSwaggerGen(c =>
                 }); 
    });
 builder.Services.AddAuthorization();
+builder.Services.AddCors();
 
 
 
@@ -89,16 +90,22 @@ app.MapAuthentificateEndpoints();
 app.MapCategoryEndpoints();
 app.MapProductEndpoints();
 app.MapViaCepEndpoints();
+app.UseCors(options =>
+{
+    options.AllowAnyOrigin();
+    options.AllowAnyMethod();
+    options.AllowAnyHeader();
+});
 
 
 
-//var environment = app.Environment;
-//app.UseExceptionHandling(environment).UseSwaggerMiddleware().UseAppCors();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c => { });
 }
+var environment = app.Environment;
+app.UseExceptionHandling(environment).UseSwaggerMiddleware().UseAppCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
