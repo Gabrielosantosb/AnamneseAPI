@@ -1,15 +1,15 @@
 using CatalogAPI.ApiEndpoints;
 using CatalogAPI.AppServicesExtensions;
 using CatalogAPI.Context;
-using CatalogAPI.Integracao;
-using CatalogAPI.Integracao.Interfaces;
-using CatalogAPI.Integracao.Refit;
+
 using CatalogAPI.Services;
+using CatalogAPI.Services.ViaCep;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Refit;
+using RestSharp;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -53,10 +53,11 @@ builder.Services.AddCors();
 
 
 
-builder.Services.AddScoped<IViaCepIntegration, ViaCepIntegration>();
+builder.Services.AddSingleton<RestClient>(_ => new RestClient("https://viacep.com.br/"));
+builder.Services.AddSingleton<ViaCepClient>();
+
 builder.Services.AddSingleton<ITokenService>(new TokenService());
-builder.Services.AddRefitClient<IViaCepIntegracaoRefit>().ConfigureHttpClient(httpClient =>
-    httpClient.BaseAddress = new Uri("https://viacep.com.br"));
+
 
 
 //--------------------------ValidarToken-----------------------------------

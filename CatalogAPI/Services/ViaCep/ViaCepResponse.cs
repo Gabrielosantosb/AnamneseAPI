@@ -1,6 +1,6 @@
-﻿namespace CatalogAPI.Integracao.Response
+﻿namespace CatalogAPI.Services.ViaCep.Model
 {
-    public class ViaCepResponse
+   public class ViaCepResponse
     {
 
         public string? Cep {  get; set; }

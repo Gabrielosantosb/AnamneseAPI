@@ -1,5 +1,5 @@
-﻿using CatalogAPI.Integracao.Interfaces;
-using Microsoft.AspNetCore.Authorization;
+﻿using CatalogAPI.Services.ViaCep.Model;
+using CatalogAPI.Services.ViaCep;
 
 namespace CatalogAPI.ApiEndpoints
 {
@@ -7,20 +7,12 @@ namespace CatalogAPI.ApiEndpoints
     {
         public static void MapViaCepEndpoints(this WebApplication app)
         {
-            app.MapGet("/cep/{cep}", [AllowAnonymous] async (string cep, IViaCepIntegration viaCepIntegration) =>
-            {
-                var responseData = await viaCepIntegration.GetDataViaCep(cep);
-                if (responseData == null)
-                {
-                    return Results.NotFound("CEP não encontrado");
-                }
-                return Results.Ok(responseData);
-            })
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status200OK)
-            .WithName("GetDataAddress")
-            .WithTags("ConsultaCep");
-
+            app.MapGet("/cep/{cep}", (string cep, ViaCepClient viaCepClient)
+                => Results.Ok(viaCepClient.GetCep(cep)))
+                .Produces<ViaCepResponse>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status400BadRequest)
+                .WithName("GetDataAddress")
+                .WithTags("ConsultaCep");
         }
     }
 }
