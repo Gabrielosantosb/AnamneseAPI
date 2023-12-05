@@ -7,8 +7,8 @@ namespace CatalogAPI.ApiEndpoints
     {
         public static void MapViaCepEndpoints(this WebApplication app)
         {
-            app.MapGet("/cep/{cep}", (string cep, ViaCepClient viaCepClient)
-                => Results.Ok(viaCepClient.GetCep(cep)))
+            app.MapGet("/cep/{cep}", async (string cep, ViaCepClient viaCepClient)
+                => Results.Ok(await viaCepClient.GetCep(cep)))
                 .Produces<ViaCepResponse>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status400BadRequest)
                 .WithName("GetDataAddress")

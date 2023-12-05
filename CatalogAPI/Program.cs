@@ -53,7 +53,7 @@ builder.Services.AddCors();
 
 
 
-builder.Services.AddSingleton<RestClient>(_ => new RestClient("https://viacep.com.br/"));
+//builder.Services.AddSingleton<RestClient>(_ => new RestClient("https://viacep.com.br/"));
 builder.Services.AddSingleton<ViaCepClient>();
 
 builder.Services.AddSingleton<ITokenService>(new TokenService());

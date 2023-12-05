@@ -1,36 +1,46 @@
 ﻿using CatalogAPI.Services.ViaCep.Model;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestSharp;
+using System.Security.Claims;
 
 namespace CatalogAPI.Services.ViaCep
 {
     [AllowAnonymous]
     public class ViaCepClient
     {
-        private readonly RestClient _restClient;
 
-        public ViaCepClient(RestClient restClient)
+        private RestClient _client;
+
+        public ViaCepClient()
         {
-            _restClient = restClient;
+            var uri = new Uri("https://viacep.com.br/");
+            _client = new RestClient(uri);
         }
 
-        public ViaCepResponse GetCep(string cep)
+        public async Task<ViaCepResponse> GetCep(string cep)
         {
-            var resource = $"ws/{cep}/json";
-            var request = new RestSharp.RestRequest(resource, Method.Get);
+            var request = new RestSharp.RestRequest($"ws/{cep}/json");
+            var response = await _client.ExecuteGetAsync(request);
 
-            try
-            {
-                var response = _restClient.Execute<ViaCepResponse>(request);
-                if (response.IsSuccessful) return response.Data!;
-                throw new Exception("Erro na requisição à API Via CEP");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Erro na requisição à API Via CEP");
-            }
+            var json = Newtonsoft.Json.JsonConvert.DeserializeObject<ViaCepResponse>(response.Content!);
+
+
+            return  json;
+
+        }
+        public async Task<ViaCepResponse> PostCep(string cep)
+        {
+
+            //Aqui seria um post
+            var request = new RestSharp.RestRequest($"ws/{cep}/json");
+            var response = await _client.ExecuteGetAsync(request);
+
+            var json = Newtonsoft.Json.JsonConvert.DeserializeObject<ViaCepResponse>(response.Content);
+            var data = System.Text.Json.JsonSerializer.Deserialize<ViaCepResponse>(response.Content);
+
+            return data;
+
         }
     }
 }
