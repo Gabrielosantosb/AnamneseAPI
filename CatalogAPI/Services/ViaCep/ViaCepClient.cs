@@ -21,13 +21,10 @@ namespace CatalogAPI.Services.ViaCep
         public async Task<ViaCepResponse> GetCep(string cep)
         {
             var request = new RestSharp.RestRequest($"ws/{cep}/json");
-            var response = await _client.ExecuteGetAsync(request);
-
-            var json = Newtonsoft.Json.JsonConvert.DeserializeObject<ViaCepResponse>(response.Content!);
-
+            var response = await _client.ExecuteGetAsync(request);            
+            var json = Newtonsoft.Json.JsonConvert.DeserializeObject<ViaCepResponse>(response.Content);
 
             return  json;
-
         }
         public async Task<ViaCepResponse> PostCep(string cep)
         {
@@ -39,7 +36,7 @@ namespace CatalogAPI.Services.ViaCep
             var json = Newtonsoft.Json.JsonConvert.DeserializeObject<ViaCepResponse>(response.Content);
             var data = System.Text.Json.JsonSerializer.Deserialize<ViaCepResponse>(response.Content);
 
-            return data;
+            return json;
 
         }
     }
