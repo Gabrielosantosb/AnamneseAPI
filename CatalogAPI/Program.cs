@@ -4,8 +4,8 @@ using CatalogAPI.Services.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Adicione os serviços ao contêiner.
+// Saiba mais sobre a configuração do Swagger/OpenAPI em https://aka.ms/aspnetcore/swashbuckle
 
 builder.Services.AddEndpointsApiExplorer();
 builder.AddApiSwagger();
@@ -15,14 +15,10 @@ builder.AddAuthJWT();
 builder.Services.AddCors();
 builder.Services.AddScoped<IUserService, UserService>();
 
-
-
+// Adicione o serviço de controladores
+builder.Services.AddControllers();
 
 var app = builder.Build();
-app.MapAuthentificateEndpoints();
-app.MapCategoryEndpoints();
-app.MapProductEndpoints();
-app.MapUserEndpoints();
 
 app.UseCors(options =>
 {
@@ -31,17 +27,19 @@ app.UseCors(options =>
     options.AllowAnyHeader();
 });
 
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "AnamneseAPI");
-        c.RoutePrefix = "swagger"; 
+        c.RoutePrefix = "swagger";
     });
 }
+
 var environment = app.Environment;
+
+app.MapControllers();
 app.UseExceptionHandling(environment).UseSwaggerMiddleware().UseAppCors();
 app.UseAuthentication();
 app.UseAuthorization();
