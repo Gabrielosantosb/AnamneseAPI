@@ -1,6 +1,7 @@
-using CatalogAPI.ApiEndpoints;
 using CatalogAPI.AppServicesExtensions;
+using CatalogAPI.Models;
 using CatalogAPI.Services.User;
+using static CatalogAPI.Repository.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ builder.Services.AddCors();
 builder.AddAuthJWT();
 builder.Services.AddCors();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<BaseRepository<UserModel>>();
 
 // Adicione o serviço de controladores
 builder.Services.AddControllers();

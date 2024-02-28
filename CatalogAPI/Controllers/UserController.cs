@@ -4,6 +4,7 @@ using CatalogAPI.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace CatalogAPI.Controllers
@@ -27,17 +28,19 @@ namespace CatalogAPI.Controllers
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Login([FromBody] LoginRequestModel loginModel)
+        public async Task<IActionResult> Login([FromBody] LoginRequestModel loginModel)
         {
             if (loginModel == null)
             {
                 return BadRequest("Credenciais inválidas");
             }
 
-            UserModel user = _userService.ValidateCredentials(loginModel.Email, loginModel.Password);
+            bool isAuthenticated = await _userService.ValidateCredentials(loginModel.Email, loginModel.Password);
 
-            if (user != null)
+            if (isAuthenticated)
             {
+                UserModel user = await _userService.GetUserByEmailAsync(loginModel.Email);
+
                 var tokenString = _tokenService.GenerateToken(
                     _configuration["Jwt:Key"],
                     _configuration["Jwt:Issuer"],
@@ -52,7 +55,6 @@ namespace CatalogAPI.Controllers
                 return BadRequest("Credenciais inválidas");
             }
         }
-
         [HttpPost("create-user")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]

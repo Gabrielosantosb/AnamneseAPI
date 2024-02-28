@@ -6,8 +6,10 @@ namespace CatalogAPI.Services.User
     {
         bool IsEmailTaken(string email);
         //UserModel CreateUser(UserModel userModel);
-        UserModel CreateUser(CreateUserModel createUserModel);
-        UserModel ValidateCredentials(string email, string password);
+        UserModel CreateUser(CreateUserModel createUserModel);        
+        Task<bool> ValidateCredentials(string email, string password);
+        Task<UserModel> GetUserByEmailAsync(string email);
+
 
     }
 }

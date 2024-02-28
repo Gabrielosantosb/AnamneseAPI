@@ -21,36 +21,15 @@ namespace CatalogAPI.Context
         {
 
 
-            //CATEGORIA
-            modelBuilder.Entity<Category>().HasKey(c => c.Id);
-            modelBuilder.Entity<Category>().Property(c => c.Name)
-                .HasMaxLength(255)
-                .IsRequired();
-            modelBuilder.Entity<Category>().Property(c => c.Description)
-              .IsRequired()
-              .HasMaxLength(255);
-
-            //PRODUTO
-            modelBuilder.Entity<Product>().HasKey(c => c.Id);
-            modelBuilder.Entity<Product>().Property(c => c.Name).HasMaxLength(255);
-            modelBuilder.Entity<Product>().Property(c => c.Description).HasMaxLength(255);
-            modelBuilder.Entity<Product>().Property(c => c.Image).HasMaxLength(100);
-            modelBuilder.Entity<Product>().Property(c => c.Price).
-                IsRequired().
-                HasPrecision(14,2);
-
+            #region user
             //Usuario
             modelBuilder.Entity<UserModel>().HasKey(u => u.Id);
             modelBuilder.Entity<UserModel>().Property(u => u.UserName).HasMaxLength(255).IsRequired();
             modelBuilder.Entity<UserModel>().Property(u => u.Email).HasMaxLength(255).IsRequired();
             modelBuilder.Entity<UserModel>().Property(u => u.Password).HasMaxLength(255).IsRequired();
+            #endregion user
 
-            //RELACIONAMENTO
-
-            modelBuilder.Entity<Product>()
-                .HasOne<Category>(c => c.Category)
-                .WithMany(p => p.Products)
-                .HasForeignKey(c => c.Id);
+            
               
         }
     }
