@@ -1,5 +1,6 @@
 using CatalogAPI.AppServicesExtensions;
 using CatalogAPI.Models;
+using CatalogAPI.Services.Pacient;
 using CatalogAPI.Services.User;
 using static CatalogAPI.Repository.Repository;
 
@@ -15,7 +16,9 @@ builder.Services.AddCors();
 builder.AddAuthJWT();
 builder.Services.AddCors();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPacientService, PacientService>();
 builder.Services.AddScoped<BaseRepository<UserModel>>();
+builder.Services.AddScoped<BaseRepository<PacientModel>>();
 
 // Adicione o serviço de controladores
 builder.Services.AddControllers();

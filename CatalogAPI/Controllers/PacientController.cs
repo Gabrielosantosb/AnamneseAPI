@@ -1,0 +1,52 @@
+﻿using CatalogAPI.Models;
+using CatalogAPI.Services.Pacient;
+using Microsoft.AspNetCore.Mvc;
+
+namespace CatalogAPI.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class PacientController : ControllerBase
+    {
+        private readonly IPacientService _pacientService;
+
+        public PacientController(IPacientService pacientService)
+        {
+            _pacientService = pacientService;
+        }
+
+        [HttpPost("create-pacient")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult CreatePacient([FromBody] PacientModel pacientModel)
+        {
+            if (pacientModel == null)
+            {
+                return BadRequest("Dados do paciente inválidos");
+            }
+            
+
+            var createdPacient = _pacientService.CreatePacient(pacientModel);
+
+            if (createdPacient != null)
+            {
+                return Ok(new { message = "Paciente criado com sucesso", pacientId = createdPacient.Id });
+            }
+            else
+            {
+                return BadRequest("Falha ao criar paciente");
+            }
+        }
+
+        [HttpGet("get-pacients")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult GetPacients()
+        {
+            var pacients = _pacientService.GetAllPacients();
+
+            return Ok(pacients);
+        }
+        
+    }
+}
