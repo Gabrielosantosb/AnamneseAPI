@@ -1,6 +1,6 @@
 ﻿using CatalogAPI.Models;
 
-namespace CatalogAPI.Services
+namespace CatalogAPI.Services.Token
 {
     public interface ITokenService
     {

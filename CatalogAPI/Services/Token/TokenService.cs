@@ -6,7 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace CatalogAPI.Services
+namespace CatalogAPI.Services.Token
 {
     public class TokenService : ITokenService
     {
@@ -31,8 +31,8 @@ namespace CatalogAPI.Services
 
             var stringToken = new JwtSecurityTokenHandler().WriteToken(token);
             return stringToken;
-            
-            
+
+
         }
     }
 }

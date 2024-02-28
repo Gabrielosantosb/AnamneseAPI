@@ -1,5 +1,6 @@
 ﻿using CatalogAPI.Context;
 using CatalogAPI.Services;
+using CatalogAPI.Services.Token;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

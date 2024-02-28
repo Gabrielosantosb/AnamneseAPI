@@ -11,6 +11,8 @@ namespace CatalogAPI.Context
 
         public DbSet<Product>? Products { get; set; }
         public DbSet<Category>? Categories { get; set; }
+        public DbSet<UserModel>? Users { get; set; }
+
 
 
 
@@ -37,6 +39,11 @@ namespace CatalogAPI.Context
                 IsRequired().
                 HasPrecision(14,2);
 
+            //Usuario
+            modelBuilder.Entity<UserModel>().HasKey(u => u.Id);
+            modelBuilder.Entity<UserModel>().Property(u => u.UserName).HasMaxLength(255).IsRequired();
+            modelBuilder.Entity<UserModel>().Property(u => u.Email).HasMaxLength(255).IsRequired();
+            modelBuilder.Entity<UserModel>().Property(u => u.Password).HasMaxLength(255).IsRequired();
 
             //RELACIONAMENTO
 
