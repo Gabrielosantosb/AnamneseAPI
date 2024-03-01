@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CatalogAPI.Migrations
 {
     [DbContext(typeof(MySQLContext))]
-    [Migration("20240228030455_Users")]
-    partial class Users
+    [Migration("20240301201925_MigrationsEdit")]
+    partial class MigrationsEdit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,9 +29,63 @@ namespace CatalogAPI.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("UserName")
                         .HasColumnType("longtext")
-                        .HasColumnName("description");
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("CatalogAPI.Models.PacientModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Adress")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("adress");
+
+                    b.Property<string>("Birth")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("birth");
+
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int")
+                        .HasColumnName("doctorId");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("email");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("gender");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("phone");
+
+                    b.Property<string>("Profession")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("profession");
+
+                    b.Property<string>("Uf")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("UF");
+
+                    b.Property<int?>("UserModelId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserName")
                         .HasColumnType("longtext")
@@ -39,7 +93,9 @@ namespace CatalogAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("categories");
+                    b.HasIndex("UserModelId");
+
+                    b.ToTable("pacients");
                 });
 
             modelBuilder.Entity("CatalogAPI.Models.Product", b =>
@@ -91,38 +147,41 @@ namespace CatalogAPI.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext")
+                        .HasColumnName("email");
 
                     b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext")
+                        .HasColumnName("password");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("longtext")
                         .HasColumnName("name");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("users");
+                });
+
+            modelBuilder.Entity("CatalogAPI.Models.PacientModel", b =>
+                {
+                    b.HasOne("CatalogAPI.Models.UserModel", null)
+                        .WithMany("Patients")
+                        .HasForeignKey("UserModelId");
                 });
 
             modelBuilder.Entity("CatalogAPI.Models.Product", b =>
                 {
                     b.HasOne("CatalogAPI.Models.Category", "Category")
-                        .WithMany("Products")
+                        .WithMany()
                         .HasForeignKey("CategoryId");
 
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("CatalogAPI.Models.Category", b =>
+            modelBuilder.Entity("CatalogAPI.Models.UserModel", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("Patients");
                 });
 #pragma warning restore 612, 618
         }

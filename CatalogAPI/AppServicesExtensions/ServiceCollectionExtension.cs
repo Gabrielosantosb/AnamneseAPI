@@ -60,7 +60,7 @@ namespace CatalogAPI.AppServicesExtensions
 
             builder.Services.AddDbContext<MySQLContext>(options => 
             options.UseMySql(connectionString, serverVersion));
-            builder.Services.AddSingleton<ITokenService>(new TokenService());
+            //builder.Services.AddSingleton<ITokenService>(new TokenService());
 
             return builder;
         }

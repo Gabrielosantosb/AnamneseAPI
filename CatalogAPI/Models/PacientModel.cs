@@ -27,11 +27,9 @@ namespace CatalogAPI.Models
         [Column("gender")]
         public string Gender { get; set; }
 
+        [ForeignKey("DoctorId")]        
+        public int DoctorId { get; set; }
 
-        //[Column("doctor_id")]
-        //public int DoctorId { get; set; }
-
-        //[ForeignKey("DoctorId")]
         //public virtual UserModel Doctor { get; set; }
     }
 }

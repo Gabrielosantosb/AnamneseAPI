@@ -82,5 +82,16 @@ namespace CatalogAPI.Controllers
                 return BadRequest("Falha ao criar usuário");
             }
         }
+
+        [HttpGet("doctors-with-patients")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult GetDoctorsWithPatients()
+        {
+            List<UserModel> doctorsWithPatients = _userService.GetDoctorsWithPatients();
+
+            return Ok(doctorsWithPatients);
+        }
     }
 }

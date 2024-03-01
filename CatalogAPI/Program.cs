@@ -1,6 +1,7 @@
 using CatalogAPI.AppServicesExtensions;
 using CatalogAPI.Models;
 using CatalogAPI.Services.Pacient;
+using CatalogAPI.Services.Token;
 using CatalogAPI.Services.User;
 using static CatalogAPI.Repository.Repository;
 
@@ -15,6 +16,8 @@ builder.AddPersistence();
 builder.Services.AddCors();
 builder.AddAuthJWT();
 builder.Services.AddCors();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPacientService, PacientService>();
 builder.Services.AddScoped<BaseRepository<UserModel>>();

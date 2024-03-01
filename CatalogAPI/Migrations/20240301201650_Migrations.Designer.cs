@@ -3,6 +3,7 @@ using System;
 using CatalogAPI.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CatalogAPI.Migrations
 {
     [DbContext(typeof(MySQLContext))]
-    partial class MySQLContextModelSnapshot : ModelSnapshot
+    [Migration("20240301201650_Migrations")]
+    partial class Migrations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,7 +56,8 @@ namespace CatalogAPI.Migrations
                         .HasColumnName("birth");
 
                     b.Property<int>("DoctorId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("doctorId");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -80,16 +84,13 @@ namespace CatalogAPI.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("UF");
 
-                    b.Property<int?>("UserModelId")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserName")
                         .HasColumnType("longtext")
                         .HasColumnName("name");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserModelId");
+                    b.HasIndex("DoctorId");
 
                     b.ToTable("pacients");
                 });
@@ -143,21 +144,15 @@ namespace CatalogAPI.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("longtext")
                         .HasColumnName("email");
 
                     b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("longtext")
                         .HasColumnName("password");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("longtext")
                         .HasColumnName("name");
 
                     b.HasKey("Id");
@@ -167,9 +162,13 @@ namespace CatalogAPI.Migrations
 
             modelBuilder.Entity("CatalogAPI.Models.PacientModel", b =>
                 {
-                    b.HasOne("CatalogAPI.Models.UserModel", null)
+                    b.HasOne("CatalogAPI.Models.UserModel", "Doctor")
                         .WithMany("Patients")
-                        .HasForeignKey("UserModelId");
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("CatalogAPI.Models.Product", b =>

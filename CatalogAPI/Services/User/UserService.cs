@@ -71,6 +71,9 @@ namespace CatalogAPI.Services.User
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        
+        public List<UserModel> GetDoctorsWithPatients()
+        {
+            return _context.Users.Include(u => u.Patients).Where(u => u.Patients.Any()).ToList();
+        }
     }
 }

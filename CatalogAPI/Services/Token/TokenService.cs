@@ -1,7 +1,5 @@
 ﻿using CatalogAPI.Models;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -10,12 +8,20 @@ namespace CatalogAPI.Services.Token
 {
     public class TokenService : ITokenService
     {
+
+        private readonly IHttpContextAccessor _accessor;
+        public TokenService(IHttpContextAccessor accessor)
+        {
+            _accessor = accessor;
+        }
+
         public string GenerateToken(string key, string issuer, string audience, UserModel user)
         {
             var claims = new[]
             {
             new Claim(ClaimTypes.Name, user.UserName),
-            new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString())
+            //new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString())            
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())            
             };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
@@ -31,7 +37,24 @@ namespace CatalogAPI.Services.Token
 
             var stringToken = new JwtSecurityTokenHandler().WriteToken(token);
             return stringToken;
+        }
 
+        #region JWT
+
+        public string? GetUserEmail() => GetClaimsIdentity().FirstOrDefault(a => a.Type == ClaimTypes.Name)?.Value;
+        public int GetUserId()
+        {
+            var claimValue = GetClaimsIdentity().FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (claimValue == null) return 0;
+            return 1;
+            //return int.Parse(claimValue);
+        }
+
+        #endregion JWT
+        private IEnumerable<Claim> GetClaimsIdentity()
+        {
+            var test = _accessor.HttpContext.User;
+            return _accessor.HttpContext.User.Claims;
 
         }
     }
