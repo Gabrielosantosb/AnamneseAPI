@@ -47,9 +47,8 @@ namespace CatalogAPI.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("adress");
 
-                    b.Property<string>("Birth")
-                        .IsRequired()
-                        .HasColumnType("longtext")
+                    b.Property<DateTime>("Birth")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("birth");
 
                     b.Property<int>("DoctorId")

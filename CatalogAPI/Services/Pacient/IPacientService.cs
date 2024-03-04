@@ -7,7 +7,7 @@ namespace CatalogAPI.Services.Pacient
         List<PacientModel> GetAllPacients();
         PacientModel GetPacientById(int id);
         PacientModel CreatePacient(PacientModel pacient);
-        PacientModel UpdatePacient(int id, PacientModel pacient);
+        PacientModel UpdatePacient(int id, PacientModel updatedPacient);
         PacientModel DeletePacient(int id);
     }
 }

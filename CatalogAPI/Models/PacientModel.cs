@@ -23,6 +23,7 @@ namespace CatalogAPI.Models
 
         [Column("birth")]
         public string Birth { get; set; }
+        //public DateTime Birth { get; set; }
 
 
         [Column("gender")]

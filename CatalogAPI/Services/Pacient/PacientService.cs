@@ -33,8 +33,7 @@ namespace CatalogAPI.Services.Pacient
         }
 
         public PacientModel CreatePacient(PacientModel pacient)
-        {
-            //pacient.DoctorId = 5;
+        {            
             pacient.DoctorId = _tokenService.GetUserId();
             dataset.Add(pacient);            
             _context.SaveChanges();                
@@ -42,9 +41,26 @@ namespace CatalogAPI.Services.Pacient
             //return _pacientRepository.Create(pacient);            
         }
 
-        public PacientModel UpdatePacient(int id, PacientModel pacient)
+        public PacientModel UpdatePacient(int id, PacientModel updatedPacient)
         {
-            return _pacientRepository.Update(pacient);
+            var existingPacient = _pacientRepository.FindById(id);
+
+            if (existingPacient != null)
+            {
+                
+                existingPacient.UserName = updatedPacient.UserName;
+                existingPacient.Email = updatedPacient.Email;
+                existingPacient.Adress = updatedPacient.Adress;
+                existingPacient.Uf = updatedPacient.Uf;
+                existingPacient.Phone = updatedPacient.Phone;
+                existingPacient.Birth = updatedPacient.Birth;
+                existingPacient.Gender = updatedPacient.Gender;
+
+                // Chame o repositório para atualizar o paciente
+                return _pacientRepository.Update(existingPacient);
+            }
+            
+            return null;
         }
 
         public PacientModel DeletePacient(int id)
