@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace CatalogAPI.Models
 {
@@ -30,6 +31,8 @@ namespace CatalogAPI.Models
         [ForeignKey("DoctorId")]        
         public int DoctorId { get; set; }
 
+        [JsonIgnore]
+        public List<UserModel>? Doctor { get; set; }
         //public virtual UserModel Doctor { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using CatalogAPI.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CatalogAPI.Migrations
 {
     [DbContext(typeof(MySQLContext))]
-    partial class MySQLContextModelSnapshot : ModelSnapshot
+    [Migration("20240301204753_EditMigrations")]
+    partial class EditMigrations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,6 +88,8 @@ namespace CatalogAPI.Migrations
                         .HasColumnName("name");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
 
                     b.ToTable("pacients");
                 });
@@ -160,19 +165,15 @@ namespace CatalogAPI.Migrations
                     b.ToTable("users");
                 });
 
-            modelBuilder.Entity("PacientModelUserModel", b =>
+            modelBuilder.Entity("CatalogAPI.Models.PacientModel", b =>
                 {
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
+                    b.HasOne("CatalogAPI.Models.UserModel", "Doctor")
+                        .WithMany("Patients")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("PatientsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("DoctorId", "PatientsId");
-
-                    b.HasIndex("PatientsId");
-
-                    b.ToTable("PacientModelUserModel");
+                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("CatalogAPI.Models.Product", b =>
@@ -184,19 +185,9 @@ namespace CatalogAPI.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("PacientModelUserModel", b =>
+            modelBuilder.Entity("CatalogAPI.Models.UserModel", b =>
                 {
-                    b.HasOne("CatalogAPI.Models.UserModel", null)
-                        .WithMany()
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CatalogAPI.Models.PacientModel", null)
-                        .WithMany()
-                        .HasForeignKey("PatientsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Patients");
                 });
 #pragma warning restore 612, 618
         }

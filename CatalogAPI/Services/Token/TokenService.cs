@@ -2,12 +2,14 @@
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace CatalogAPI.Services.Token
 {
     public class TokenService : ITokenService
     {
+
 
         private readonly IHttpContextAccessor _accessor;
         public TokenService(IHttpContextAccessor accessor)
@@ -20,8 +22,8 @@ namespace CatalogAPI.Services.Token
             var claims = new[]
             {
             new Claim(ClaimTypes.Name, user.UserName),
-            //new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString())            
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())            
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+            //new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString())
             };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
@@ -38,6 +40,15 @@ namespace CatalogAPI.Services.Token
             var stringToken = new JwtSecurityTokenHandler().WriteToken(token);
             return stringToken;
         }
+        public string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+                return Convert.ToBase64String(randomNumber);
+            };
+        }
 
         #region JWT
 
@@ -46,8 +57,7 @@ namespace CatalogAPI.Services.Token
         {
             var claimValue = GetClaimsIdentity().FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier)?.Value;
             if (claimValue == null) return 0;
-            return 1;
-            //return int.Parse(claimValue);
+            return int.Parse(claimValue);            
         }
 
         #endregion JWT

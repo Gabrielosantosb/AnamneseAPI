@@ -34,8 +34,8 @@ namespace CatalogAPI.Services.Pacient
 
         public PacientModel CreatePacient(PacientModel pacient)
         {
-            //pacient.DoctorId = _tokenService.GetUserId();
-            pacient.DoctorId = 5;
+            //pacient.DoctorId = 5;
+            pacient.DoctorId = _tokenService.GetUserId();
             dataset.Add(pacient);            
             _context.SaveChanges();                
             return pacient;
