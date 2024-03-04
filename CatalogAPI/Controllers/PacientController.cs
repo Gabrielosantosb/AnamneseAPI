@@ -51,6 +51,36 @@ namespace CatalogAPI.Controllers
 
             return Ok(pacients);
         }
-        
+
+        [HttpGet("get-pacient/{pacientId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult GetPacientsById(int pacientId)
+        {
+            var pacient = _pacientService.GetPacientById(pacientId);
+
+            if (pacient != null)
+            {
+                return Ok(pacient);
+            }
+            else
+            {
+                return BadRequest("Paciente não encontrado");
+            }
+        }
+
+
+        [HttpDelete("remove-pacient/{pacientId}")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult RemovePacient(int pacientId)
+        {
+            var removedPacient = _pacientService.DeletePacient(pacientId);
+
+            return Ok(removedPacient);
+
+
+        }
     }
 }

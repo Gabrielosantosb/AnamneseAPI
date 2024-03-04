@@ -49,7 +49,17 @@ namespace CatalogAPI.Services.Pacient
 
         public PacientModel DeletePacient(int id)
         {
-            return _pacientRepository.Delete(id);
+            var pacientToRemove = _context.Pacients.Find(id);
+
+            if (pacientToRemove != null)
+            {
+                _context.Pacients.Remove(pacientToRemove);
+                _context.SaveChanges();
+
+                return pacientToRemove;
+            }
+            return null;
+
         }
     }
 }
